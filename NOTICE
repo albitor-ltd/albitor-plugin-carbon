@@ -1,0 +1,41 @@
+albitor-plugin-carbon
+=====================
+
+Copyright 2026 Albitor Ltd
+
+This product is licensed under the Apache License, Version 2.0 (see LICENCE).
+
+This plugin's own code (the plugin manifest, skill wiring, commands, agent
+definition, hook script, and preview page) is original work of Albitor Ltd.
+
+Bundled reference content
+-------------------------
+
+The reference material under `skills/*/references/` and the preview page under
+`preview/` are distilled from public standards and design-system guidance. They
+are redistributed under the licences of their sources:
+
+* IBM Carbon Design System and IBM Design Language
+  https://carbondesignsystem.com/  and  https://www.ibm.com/design/language/
+  Carbon is licensed under the Apache License, Version 2.0:
+  http://www.apache.org/licenses/LICENSE-2.0
+  IBM Plex is licensed under the SIL Open Font License 1.1:
+  https://openfontlicense.org/
+
+* Web Content Accessibility Guidelines (WCAG) 2.2
+  https://www.w3.org/TR/WCAG22/
+  © W3C. Used under the W3C Document Licence:
+  https://www.w3.org/copyright/document-license/
+
+The reference files are a distilled snapshot for convenience and may lag the
+live sources. Always confirm exact, current detail against the original URLs.
+
+Trademarks
+----------
+
+IBM, the IBM logo, the IBM 8-bar mark, "Carbon", "IBM Plex", and related marks
+are trademarks or registered trademarks of International Business Machines
+Corporation. VPAT® is a registered trademark of the Information Technology
+Industry Council (ITI). This plugin is an independent work and is not
+affiliated with, sponsored by, or endorsed by IBM or ITI. These marks are used
+only to identify the design system and standards the plugin supports.

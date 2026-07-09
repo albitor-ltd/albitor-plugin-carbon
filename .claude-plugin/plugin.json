@@ -1,0 +1,21 @@
+{
+  "name": "carbon",
+  "displayName": "IBM Carbon",
+  "version": "0.1.0",
+  "description": "Build and audit enterprise, data-heavy B2B interfaces with the IBM Carbon Design System: Carbon components (React and Web Components), patterns, IBM Design Language styles and tokens, plus WCAG 2.2 AA accessibility and an axe-based conformance baseline.",
+  "author": {
+    "name": "Albitor Ltd",
+    "email": "jamie@albitor.com"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "carbon",
+    "ibm",
+    "enterprise",
+    "design-system",
+    "preview-page",
+    "accessibility",
+    "wcag",
+    "a11y"
+  ]
+}

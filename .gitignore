@@ -1,0 +1,11 @@
+# OS / editor cruft
+.DS_Store
+*.swp
+*~
+
+# Node (if tooling is added later)
+node_modules/
+npm-debug.log*
+
+# Local Claude session state
+.claude/settings.local.json

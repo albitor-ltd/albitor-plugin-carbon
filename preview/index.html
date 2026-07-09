@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IBM Carbon kitchen sink — preview</title>
+  <style>
+    /* ---------------------------------------------------------------------
+       Self-contained approximation of IBM Carbon (g10 light / g100 dark).
+       Hand-rendered Carbon-styled markup with tokens as CSS custom
+       properties. No build step, no network, opens from file://.
+       Carbon is Apache-2.0; IBM Plex is SIL OFL (loaded here only if the
+       viewer already has it, with a system fallback stack).
+       --------------------------------------------------------------------- */
+    :root {
+      /* g10 (light) theme tokens */
+      --background: #f4f4f4;
+      --layer-01: #ffffff;
+      --layer-02: #f4f4f4;
+      --field-01: #f4f4f4;
+      --text-primary: #161616;
+      --text-secondary: #525252;
+      --text-helper: #6f6f6f;
+      --text-placeholder: #a8a8a8;
+      --text-on-color: #ffffff;
+      --link-primary: #0f62fe;
+      --interactive: #0f62fe;
+      --button-primary: #0f62fe;
+      --button-primary-hover: #0353e9;
+      --button-secondary: #393939;
+      --button-secondary-hover: #4c4c4c;
+      --button-danger: #da1e28;
+      --button-danger-hover: #ba1b23;
+      --focus: #0f62fe;
+      --support-error: #da1e28;
+      --support-success: #24a148;
+      --support-warning: #f1c21b;
+      --support-info: #0043ce;
+      --border-subtle: #e0e0e0;
+      --border-strong: #8d8d8d;
+      --header-bg: #161616;
+      --header-text: #f4f4f4;
+      --tag-blue-bg: #d0e2ff; --tag-blue-fg: #0043ce;
+      --tag-green-bg: #a7f0ba; --tag-green-fg: #0e6027;
+      --tag-red-bg: #ffd7d9;   --tag-red-fg: #a2191f;
+      --tag-gray-bg: #e0e0e0;  --tag-gray-fg: #393939;
+      /* spacing scale */
+      --spacing-03: 8px; --spacing-05: 16px; --spacing-06: 24px;
+      --spacing-07: 32px; --spacing-09: 48px;
+      --font-sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    }
+    :root[data-theme="dark"] {
+      /* g100 (dark) theme tokens */
+      --background: #161616;
+      --layer-01: #262626;
+      --layer-02: #393939;
+      --field-01: #262626;
+      --text-primary: #f4f4f4;
+      --text-secondary: #c6c6c6;
+      --text-helper: #8d8d8d;
+      --text-placeholder: #6f6f6f;
+      --button-secondary: #6f6f6f;
+      --button-secondary-hover: #5e5e5e;
+      --border-subtle: #393939;
+      --border-strong: #6f6f6f;
+      --tag-blue-bg: #002d9c; --tag-blue-fg: #d0e2ff;
+      --tag-green-bg: #044317; --tag-green-fg: #a7f0ba;
+      --tag-red-bg: #750e13;   --tag-red-fg: #ffd7d9;
+      --tag-gray-bg: #525252;  --tag-gray-fg: #f4f4f4;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--text-primary);
+      background: var(--background);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link-primary); }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+    /* ---- UI Shell header ---- */
+    .cds-header {
+      display: flex; align-items: center; height: 48px;
+      background: var(--header-bg); color: var(--header-text);
+      padding: 0 var(--spacing-05); gap: var(--spacing-06);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .cds-header__name { font-weight: 600; letter-spacing: .01em; }
+    .cds-header__name span { font-weight: 400; color: #c6c6c6; }
+    .cds-header__nav { display: flex; gap: 2px; margin-left: var(--spacing-05); }
+    .cds-header__nav a {
+      color: #c6c6c6; text-decoration: none; padding: 0 var(--spacing-05);
+      height: 48px; display: inline-flex; align-items: center; font-size: 14px;
+    }
+    .cds-header__nav a[aria-current="page"] { color: #fff; box-shadow: inset 0 -3px 0 0 var(--interactive); }
+    .cds-header__nav a:hover { color: #fff; background: #2c2c2c; }
+    .cds-header__actions { margin-left: auto; display: flex; }
+    .cds-header__action {
+      width: 48px; height: 48px; border: 0; background: transparent; color: #c6c6c6;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .cds-header__action:hover { color: #fff; background: #2c2c2c; }
+
+    .page { max-width: 1056px; margin: 0 auto; padding: var(--spacing-07) var(--spacing-05) var(--spacing-09); }
+    h1 { font-size: 28px; font-weight: 400; margin: 0 0 var(--spacing-03); }
+    h2 { font-size: 20px; font-weight: 600; margin: var(--spacing-09) 0 var(--spacing-05); padding-bottom: var(--spacing-03); border-bottom: 1px solid var(--border-subtle); }
+    .lead { color: var(--text-secondary); margin: 0 0 var(--spacing-06); max-width: 60ch; }
+    .row { display: flex; flex-wrap: wrap; gap: var(--spacing-05); align-items: flex-start; }
+    .stack > * + * { margin-top: var(--spacing-05); }
+
+    /* ---- Buttons ---- */
+    .cds-btn {
+      font-family: inherit; font-size: 14px; line-height: 1;
+      display: inline-flex; align-items: center; gap: var(--spacing-05);
+      min-height: 48px; padding: 14px 60px 14px 16px; border: 1px solid transparent;
+      cursor: pointer; text-align: left; border-radius: 0; transition: background .11s;
+    }
+    .cds-btn--primary { background: var(--button-primary); color: #fff; }
+    .cds-btn--primary:hover { background: var(--button-primary-hover); }
+    .cds-btn--secondary { background: var(--button-secondary); color: #fff; }
+    .cds-btn--secondary:hover { background: var(--button-secondary-hover); }
+    .cds-btn--tertiary { background: transparent; color: var(--interactive); border-color: var(--interactive); }
+    .cds-btn--tertiary:hover { background: var(--interactive); color: #fff; }
+    .cds-btn--ghost { background: transparent; color: var(--interactive); padding-right: 16px; }
+    .cds-btn--ghost:hover { background: rgba(141,141,141,.16); }
+    .cds-btn--danger { background: var(--button-danger); color: #fff; }
+    .cds-btn--danger:hover { background: var(--button-danger-hover); }
+    .cds-btn--icon {
+      min-height: 48px; width: 48px; padding: 0; justify-content: center;
+      background: transparent; color: var(--text-primary);
+    }
+    .cds-btn--icon:hover { background: rgba(141,141,141,.16); }
+    .cds-btn svg { flex: 0 0 auto; }
+
+    /* ---- Form fields ---- */
+    .cds-form-item { margin-bottom: var(--spacing-06); max-width: 20rem; }
+    .cds-label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: var(--spacing-03); }
+    .cds-helper { font-size: 12px; color: var(--text-helper); margin-top: var(--spacing-03); }
+    .cds-input, .cds-select, .cds-textarea {
+      width: 100%; font-family: inherit; font-size: 14px; color: var(--text-primary);
+      background: var(--field-01); border: 0; border-bottom: 1px solid var(--border-strong);
+      padding: 11px 16px; min-height: 48px; border-radius: 0;
+    }
+    .cds-textarea { min-height: 96px; resize: vertical; }
+    .cds-input::placeholder { color: var(--text-placeholder); }
+    .cds-input:focus, .cds-select:focus, .cds-textarea:focus { outline: 2px solid var(--focus); outline-offset: -2px; }
+    .cds-input--invalid { outline: 2px solid var(--support-error); outline-offset: -2px; }
+    .cds-invalid-text { font-size: 12px; color: var(--support-error); margin-top: var(--spacing-03); }
+    .cds-select-wrap { position: relative; }
+    .cds-select { appearance: none; padding-right: 40px; }
+    .cds-select-wrap svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-primary); }
+    .cds-password-wrap { position: relative; }
+    .cds-password-wrap .cds-input { padding-right: 48px; }
+    .cds-password-toggle { position: absolute; right: 0; top: 0; height: 48px; width: 40px; border: 0; background: transparent; color: var(--text-primary); cursor: pointer; }
+
+    /* checkbox / radio / toggle */
+    .cds-choice { display: flex; align-items: center; gap: var(--spacing-03); margin-bottom: var(--spacing-03); font-size: 14px; }
+    .cds-choice input { width: 16px; height: 16px; accent-color: var(--interactive); }
+    .cds-toggle { display: inline-flex; align-items: center; gap: var(--spacing-03); }
+    .cds-toggle__track { width: 48px; height: 24px; border-radius: 12px; background: var(--border-strong); position: relative; transition: background .1s; }
+    .cds-toggle__track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .1s; }
+    .cds-toggle input { position: absolute; opacity: 0; }
+    .cds-toggle input:checked + .cds-toggle__track { background: var(--support-success); }
+    .cds-toggle input:checked + .cds-toggle__track::after { left: 27px; }
+    .cds-toggle input:focus-visible + .cds-toggle__track { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+    /* ---- Notifications ---- */
+    .cds-notification { display: flex; gap: var(--spacing-05); padding: var(--spacing-05); border-left: 3px solid; background: var(--layer-01); margin-bottom: var(--spacing-05); max-width: 40rem; }
+    .cds-notification--info { border-color: var(--support-info); }
+    .cds-notification--success { border-color: var(--support-success); }
+    .cds-notification--warning { border-color: var(--support-warning); }
+    .cds-notification--error { border-color: var(--support-error); }
+    .cds-notification strong { display: block; font-size: 14px; }
+    .cds-notification p { margin: 2px 0 0; font-size: 14px; color: var(--text-secondary); }
+    .cds-notification .dot { flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%; margin-top: 2px; }
+    .dot--info { background: var(--support-info); } .dot--success { background: var(--support-success); }
+    .dot--warning { background: var(--support-warning); } .dot--error { background: var(--support-error); }
+
+    /* ---- Tags ---- */
+    .cds-tag { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 12px; font-size: 12px; margin: 0 6px 6px 0; }
+    .cds-tag--blue { background: var(--tag-blue-bg); color: var(--tag-blue-fg); }
+    .cds-tag--green { background: var(--tag-green-bg); color: var(--tag-green-fg); }
+    .cds-tag--red { background: var(--tag-red-bg); color: var(--tag-red-fg); }
+    .cds-tag--gray { background: var(--tag-gray-bg); color: var(--tag-gray-fg); }
+
+    /* ---- Tiles ---- */
+    .cds-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-05); }
+    .cds-tile { background: var(--layer-01); border: 1px solid var(--border-subtle); padding: var(--spacing-06); }
+    .cds-tile h3 { margin: 0 0 var(--spacing-03); font-size: 14px; font-weight: 600; }
+    .cds-tile .metric { font-size: 32px; font-weight: 300; }
+    .cds-tile p { margin: var(--spacing-03) 0 0; color: var(--text-secondary); font-size: 13px; }
+
+    /* ---- Structured list ---- */
+    .cds-slist { width: 100%; border-collapse: collapse; background: var(--layer-01); }
+    .cds-slist th, .cds-slist td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); font-size: 14px; }
+    .cds-slist th { font-weight: 600; color: var(--text-secondary); font-size: 12px; }
+
+    /* ---- Data table ---- */
+    .cds-table-toolbar { display: flex; align-items: center; justify-content: space-between; background: var(--layer-01); padding: var(--spacing-03) var(--spacing-05); border-bottom: 1px solid var(--border-subtle); }
+    .cds-table-toolbar .cds-input { max-width: 16rem; min-height: 40px; }
+    .cds-table { width: 100%; border-collapse: collapse; background: var(--layer-01); font-size: 14px; }
+    .cds-table th, .cds-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); }
+    .cds-table thead th { background: var(--layer-02); font-weight: 600; font-size: 12px; color: var(--text-primary); white-space: nowrap; }
+    .cds-table th.sortable button { border: 0; background: transparent; font: inherit; font-weight: 600; font-size: 12px; color: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .cds-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .cds-table tbody tr:hover { background: rgba(141,141,141,.10); }
+    .cds-table input[type="checkbox"] { accent-color: var(--interactive); }
+    .table-scroll { overflow-x: auto; }
+
+    /* ---- Tabs ---- */
+    .cds-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
+    .cds-tab { border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--text-secondary); padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; }
+    .cds-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--interactive); font-weight: 600; }
+    .cds-tab:hover { color: var(--text-primary); }
+    .cds-tabpanel { padding: var(--spacing-06) 0; }
+
+    /* ---- Modal (rendered as a static example, not an overlay) ---- */
+    .cds-modal { max-width: 32rem; background: var(--layer-01); border: 1px solid var(--border-subtle); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+    .cds-modal__head { display: flex; align-items: flex-start; justify-content: space-between; padding: var(--spacing-05) var(--spacing-05) 0; }
+    .cds-modal__head h3 { margin: 0; font-size: 20px; font-weight: 400; }
+    .cds-modal__head small { display: block; color: var(--text-secondary); font-size: 12px; margin-bottom: var(--spacing-03); }
+    .cds-modal__body { padding: var(--spacing-05); color: var(--text-secondary); }
+    .cds-modal__foot { display: flex; }
+    .cds-modal__foot .cds-btn { flex: 1; }
+
+    .swatches { display: flex; flex-wrap: wrap; gap: var(--spacing-05); }
+    .swatch { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+    .swatch .chip { width: 88px; height: 48px; border: 1px solid var(--border-subtle); }
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--layer-02); padding: 1px 4px; }
+
+    footer.page-foot { border-top: 1px solid var(--border-subtle); margin-top: var(--spacing-09); padding: var(--spacing-06) var(--spacing-05); color: var(--text-secondary); font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <!-- UI Shell header -->
+  <header class="cds-header">
+    <span class="cds-header__name">Carbon <span>Preview</span></span>
+    <nav class="cds-header__nav" aria-label="Product">
+      <a href="#" aria-current="page">Dashboard</a>
+      <a href="#components">Components</a>
+      <a href="#data">Data</a>
+    </nav>
+    <div class="cds-header__actions">
+      <button class="cds-header__action" type="button" aria-label="Search">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+      <button class="cds-header__action" type="button" aria-label="Notifications">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8a5 5 0 0 1 10 0v4l1.5 2h-13L5 12V8z" stroke="currentColor" stroke-width="1.5"/><path d="M8 16a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+      <button class="cds-header__action" type="button" id="theme-toggle" aria-label="Toggle light and dark theme">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 1v2M10 17v2M1 10h2M17 10h2M4 4l1.5 1.5M14.5 14.5 16 16M16 4l-1.5 1.5M5.5 14.5 4 16" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1>IBM Carbon kitchen sink</h1>
+    <p class="lead">A self-contained, static preview of core IBM Carbon Design System components rendered with the g10 (light) and g100 (dark) theme tokens. Use the sun icon in the header to switch themes. This is a visual reference, not the production build — real apps consume <code>@carbon/react</code> or <code>@carbon/web-components</code>.</p>
+
+    <section id="components">
+      <h2>Buttons</h2>
+      <div class="row">
+        <button type="button" class="cds-btn cds-btn--primary">Primary
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <button type="button" class="cds-btn cds-btn--secondary">Secondary</button>
+        <button type="button" class="cds-btn cds-btn--tertiary">Tertiary</button>
+        <button type="button" class="cds-btn cds-btn--ghost">Ghost</button>
+        <button type="button" class="cds-btn cds-btn--danger">Delete</button>
+        <button type="button" class="cds-btn cds-btn--icon" aria-label="Add item">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><line x1="10" y1="4" x2="10" y2="16" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Form inputs</h2>
+      <div class="row">
+        <form class="stack" style="flex:1 1 320px;">
+          <div class="cds-form-item">
+            <label class="cds-label" for="f-name">Full name</label>
+            <input class="cds-input" id="f-name" type="text" autocomplete="name" placeholder="Ada Lovelace">
+            <div class="cds-helper">As it appears on official documents.</div>
+          </div>
+          <div class="cds-form-item">
+            <label class="cds-label" for="f-email">Work email (invalid example)</label>
+            <input class="cds-input cds-input--invalid" id="f-email" type="email" value="ada@" aria-invalid="true" aria-describedby="f-email-err">
+            <div class="cds-invalid-text" id="f-email-err">Enter a valid email address, e.g. name@example.com</div>
+          </div>
+          <div class="cds-form-item">
+            <label class="cds-label" for="f-pass">Password</label>
+            <div class="cds-password-wrap">
+              <input class="cds-input" id="f-pass" type="password" value="hunter2000" autocomplete="current-password">
+              <button type="button" class="cds-password-toggle" aria-label="Show password" data-pass-toggle>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.2" stroke="currentColor" stroke-width="1.5"/></svg>
+              </button>
+            </div>
+          </div>
+        </form>
+        <form class="stack" style="flex:1 1 320px;">
+          <div class="cds-form-item">
+            <label class="cds-label" for="f-role">Role</label>
+            <div class="cds-select-wrap">
+              <select class="cds-select" id="f-role">
+                <option>Administrator</option>
+                <option>Editor</option>
+                <option>Viewer</option>
+              </select>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+          </div>
+          <div class="cds-form-item">
+            <label class="cds-label" for="f-notes">Notes</label>
+            <textarea class="cds-textarea" id="f-notes" placeholder="Optional context…"></textarea>
+          </div>
+          <fieldset class="cds-form-item" style="border:0;padding:0;margin:0;">
+            <legend class="cds-label">Permissions</legend>
+            <label class="cds-choice"><input type="checkbox" checked> Read</label>
+            <label class="cds-choice"><input type="checkbox"> Write</label>
+            <label class="cds-choice"><input type="checkbox"> Delete</label>
+          </fieldset>
+          <fieldset class="cds-form-item" style="border:0;padding:0;margin:0;">
+            <legend class="cds-label">Environment</legend>
+            <label class="cds-choice"><input type="radio" name="env" checked> Production</label>
+            <label class="cds-choice"><input type="radio" name="env"> Staging</label>
+          </fieldset>
+          <div class="cds-form-item">
+            <span class="cds-label" id="toggle-label">Email notifications</span>
+            <label class="cds-toggle">
+              <input type="checkbox" checked aria-labelledby="toggle-label">
+              <span class="cds-toggle__track"></span>
+              <span>On</span>
+            </label>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <h2>Notifications</h2>
+      <div class="cds-notification cds-notification--info"><span class="dot dot--info" aria-hidden="true"></span><div><strong>Informational</strong><p>A new export format is available.</p></div></div>
+      <div class="cds-notification cds-notification--success"><span class="dot dot--success" aria-hidden="true"></span><div><strong>Success</strong><p>Your changes were saved.</p></div></div>
+      <div class="cds-notification cds-notification--warning"><span class="dot dot--warning" aria-hidden="true"></span><div><strong>Warning</strong><p>Your session expires in 5 minutes.</p></div></div>
+      <div class="cds-notification cds-notification--error"><span class="dot dot--error" aria-hidden="true"></span><div><strong>Error</strong><p>Two records failed to import.</p></div></div>
+    </section>
+
+    <section>
+      <h2>Tags</h2>
+      <div>
+        <span class="cds-tag cds-tag--blue">Active</span>
+        <span class="cds-tag cds-tag--green">Passed</span>
+        <span class="cds-tag cds-tag--red">Failed</span>
+        <span class="cds-tag cds-tag--gray">Draft</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tiles</h2>
+      <div class="cds-tiles">
+        <div class="cds-tile"><h3>Total users</h3><div class="metric">12,480</div><p>+4.2% this week</p></div>
+        <div class="cds-tile"><h3>Active sessions</h3><div class="metric">318</div><p>Live now</p></div>
+        <div class="cds-tile"><h3>Error rate</h3><div class="metric">0.4%</div><p>Within threshold</p></div>
+        <div class="cds-tile"><h3>Uptime</h3><div class="metric">99.98%</div><p>Last 30 days</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Structured list</h2>
+      <table class="cds-slist">
+        <thead><tr><th scope="col">Setting</th><th scope="col">Value</th><th scope="col">Scope</th></tr></thead>
+        <tbody>
+          <tr><td>Data retention</td><td>90 days</td><td>Organisation</td></tr>
+          <tr><td>Region</td><td>eu-west-2</td><td>Workspace</td></tr>
+          <tr><td>Encryption</td><td>AES-256 at rest</td><td>Organisation</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="data">
+      <h2>Data table</h2>
+      <div class="cds-table-toolbar">
+        <label class="cds-label" style="margin:0;">
+          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Search table</span>
+        </label>
+        <input class="cds-input" type="search" aria-label="Search table" placeholder="Search">
+        <button type="button" class="cds-btn cds-btn--primary" style="padding:11px 16px;min-height:40px;">Add record</button>
+      </div>
+      <div class="table-scroll">
+        <table class="cds-table">
+          <thead>
+            <tr>
+              <th scope="col"><input type="checkbox" aria-label="Select all rows"></th>
+              <th scope="col" class="sortable"><button type="button">Name
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M4 6l3-3 3 3M4 8l3 3 3-3" stroke="currentColor" stroke-width="1.2"/></svg>
+              </button></th>
+              <th scope="col">Status</th>
+              <th scope="col">Owner</th>
+              <th scope="col" class="num">Records</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><input type="checkbox" aria-label="Select Orders pipeline"></td><td>Orders pipeline</td><td><span class="cds-tag cds-tag--green">Healthy</span></td><td>a.turing</td><td class="num">1,204</td></tr>
+            <tr><td><input type="checkbox" aria-label="Select Billing sync"></td><td>Billing sync</td><td><span class="cds-tag cds-tag--red">Failing</span></td><td>g.hopper</td><td class="num">98</td></tr>
+            <tr><td><input type="checkbox" aria-label="Select Audit log"></td><td>Audit log</td><td><span class="cds-tag cds-tag--blue">Running</span></td><td>k.johnson</td><td class="num">54,900</td></tr>
+            <tr><td><input type="checkbox" aria-label="Select Nightly report"></td><td>Nightly report</td><td><span class="cds-tag cds-tag--gray">Paused</span></td><td>a.lovelace</td><td class="num">0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tabs</h2>
+      <div class="cds-tabs" role="tablist" aria-label="Record view">
+        <button class="cds-tab" role="tab" id="tab-1" aria-selected="true" aria-controls="panel-1">Overview</button>
+        <button class="cds-tab" role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2" tabindex="-1">Activity</button>
+        <button class="cds-tab" role="tab" id="tab-3" aria-selected="false" aria-controls="panel-3" tabindex="-1">Settings</button>
+      </div>
+      <div class="cds-tabpanel" role="tabpanel" id="panel-1" aria-labelledby="tab-1">
+        <p style="margin:0;color:var(--text-secondary);">Overview content. Tabs switch between equivalent sections; only the selected panel is shown.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Modal (static example)</h2>
+      <div class="cds-modal" role="dialog" aria-labelledby="m-title" aria-describedby="m-body">
+        <div class="cds-modal__head">
+          <div>
+            <small>Billing sync</small>
+            <h3 id="m-title">Delete this data source?</h3>
+          </div>
+          <button type="button" class="cds-btn cds-btn--icon" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <div class="cds-modal__body" id="m-body">Deleting removes the data source and its 98 records. This cannot be undone.</div>
+        <div class="cds-modal__foot">
+          <button type="button" class="cds-btn cds-btn--secondary" style="justify-content:flex-start;">Cancel</button>
+          <button type="button" class="cds-btn cds-btn--danger" style="justify-content:flex-start;">Delete</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Theme tokens</h2>
+      <div class="swatches">
+        <div class="swatch"><span class="chip" style="background:var(--interactive)"></span>interactive</div>
+        <div class="swatch"><span class="chip" style="background:var(--support-error)"></span>support-error</div>
+        <div class="swatch"><span class="chip" style="background:var(--support-success)"></span>support-success</div>
+        <div class="swatch"><span class="chip" style="background:var(--support-warning)"></span>support-warning</div>
+        <div class="swatch"><span class="chip" style="background:var(--layer-01)"></span>layer-01</div>
+        <div class="swatch"><span class="chip" style="background:var(--background)"></span>background</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-foot">
+    Static Carbon preview · component look approximated from IBM Carbon (Apache-2.0) g10 / g100 theme tokens · not affiliated with IBM.
+  </footer>
+
+  <script>
+    // Theme toggle (light g10 <-> dark g100). Inline, no network — file:// safe.
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', function () {
+          root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+      }
+      // Password show/hide toggle.
+      document.querySelectorAll('[data-pass-toggle]').forEach(function (t) {
+        t.addEventListener('click', function () {
+          var input = t.parentNode.querySelector('input');
+          var showing = input.type === 'text';
+          input.type = showing ? 'password' : 'text';
+          t.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
