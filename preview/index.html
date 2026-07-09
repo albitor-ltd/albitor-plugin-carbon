@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IBM Carbon kitchen sink — preview</title>
+  <title>IBM Carbon — component preview</title>
   <style>
     /* ---------------------------------------------------------------------
        Self-contained approximation of IBM Carbon (g10 light / g100 dark).
@@ -11,6 +11,10 @@
        properties. No build step, no network, opens from file://.
        Carbon is Apache-2.0; IBM Plex is SIL OFL (loaded here only if the
        viewer already has it, with a system fallback stack).
+
+       Layout follows the shared preview comparison spec (PREVIEW-SPEC.md):
+       the same screen, sample data, and copy as the other Albitor
+       design-system previews, rendered with IBM Carbon components.
        --------------------------------------------------------------------- */
     :root {
       /* g10 (light) theme tokens */
@@ -23,6 +27,7 @@
       --text-helper: #6f6f6f;
       --text-placeholder: #a8a8a8;
       --text-on-color: #ffffff;
+      --text-disabled: #c6c6c6;
       --link-primary: #0f62fe;
       --interactive: #0f62fe;
       --button-primary: #0f62fe;
@@ -31,6 +36,7 @@
       --button-secondary-hover: #4c4c4c;
       --button-danger: #da1e28;
       --button-danger-hover: #ba1b23;
+      --button-disabled: #c6c6c6;
       --focus: #0f62fe;
       --support-error: #da1e28;
       --support-success: #24a148;
@@ -60,8 +66,10 @@
       --text-secondary: #c6c6c6;
       --text-helper: #8d8d8d;
       --text-placeholder: #6f6f6f;
+      --text-disabled: #525252;
       --button-secondary: #6f6f6f;
       --button-secondary-hover: #5e5e5e;
+      --button-disabled: #393939;
       --border-subtle: #393939;
       --border-strong: #6f6f6f;
       --tag-blue-bg: #002d9c; --tag-blue-fg: #d0e2ff;
@@ -130,6 +138,8 @@
     .cds-btn--ghost:hover { background: rgba(141,141,141,.16); }
     .cds-btn--danger { background: var(--button-danger); color: #fff; }
     .cds-btn--danger:hover { background: var(--button-danger-hover); }
+    .cds-btn:disabled { background: var(--button-disabled); color: var(--text-disabled); cursor: not-allowed; border-color: transparent; }
+    .cds-btn:disabled:hover { background: var(--button-disabled); }
     .cds-btn--icon {
       min-height: 48px; width: 48px; padding: 0; justify-content: center;
       background: transparent; color: var(--text-primary);
@@ -154,32 +164,23 @@
     .cds-select-wrap { position: relative; }
     .cds-select { appearance: none; padding-right: 40px; }
     .cds-select-wrap svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-primary); }
-    .cds-password-wrap { position: relative; }
-    .cds-password-wrap .cds-input { padding-right: 48px; }
-    .cds-password-toggle { position: absolute; right: 0; top: 0; height: 48px; width: 40px; border: 0; background: transparent; color: var(--text-primary); cursor: pointer; }
 
-    /* checkbox / radio / toggle */
+    /* checkbox / radio */
     .cds-choice { display: flex; align-items: center; gap: var(--spacing-03); margin-bottom: var(--spacing-03); font-size: 14px; }
     .cds-choice input { width: 16px; height: 16px; accent-color: var(--interactive); }
-    .cds-toggle { display: inline-flex; align-items: center; gap: var(--spacing-03); }
-    .cds-toggle__track { width: 48px; height: 24px; border-radius: 12px; background: var(--border-strong); position: relative; transition: background .1s; }
-    .cds-toggle__track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .1s; }
-    .cds-toggle input { position: absolute; opacity: 0; }
-    .cds-toggle input:checked + .cds-toggle__track { background: var(--support-success); }
-    .cds-toggle input:checked + .cds-toggle__track::after { left: 27px; }
-    .cds-toggle input:focus-visible + .cds-toggle__track { outline: 2px solid var(--focus); outline-offset: 2px; }
+    fieldset.cds-fieldset { border: 0; padding: 0; margin: 0 0 var(--spacing-06); }
+    fieldset.cds-fieldset legend { font-size: 12px; color: var(--text-secondary); margin-bottom: var(--spacing-03); padding: 0; }
 
     /* ---- Notifications ---- */
     .cds-notification { display: flex; gap: var(--spacing-05); padding: var(--spacing-05); border-left: 3px solid; background: var(--layer-01); margin-bottom: var(--spacing-05); max-width: 40rem; }
     .cds-notification--info { border-color: var(--support-info); }
     .cds-notification--success { border-color: var(--support-success); }
-    .cds-notification--warning { border-color: var(--support-warning); }
     .cds-notification--error { border-color: var(--support-error); }
     .cds-notification strong { display: block; font-size: 14px; }
     .cds-notification p { margin: 2px 0 0; font-size: 14px; color: var(--text-secondary); }
     .cds-notification .dot { flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%; margin-top: 2px; }
     .dot--info { background: var(--support-info); } .dot--success { background: var(--support-success); }
-    .dot--warning { background: var(--support-warning); } .dot--error { background: var(--support-error); }
+    .dot--error { background: var(--support-error); }
 
     /* ---- Tags ---- */
     .cds-tag { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 12px; font-size: 12px; margin: 0 6px 6px 0; }
@@ -188,28 +189,25 @@
     .cds-tag--red { background: var(--tag-red-bg); color: var(--tag-red-fg); }
     .cds-tag--gray { background: var(--tag-gray-bg); color: var(--tag-gray-fg); }
 
-    /* ---- Tiles ---- */
-    .cds-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-05); }
-    .cds-tile { background: var(--layer-01); border: 1px solid var(--border-subtle); padding: var(--spacing-06); }
-    .cds-tile h3 { margin: 0 0 var(--spacing-03); font-size: 14px; font-weight: 600; }
-    .cds-tile .metric { font-size: 32px; font-weight: 300; }
-    .cds-tile p { margin: var(--spacing-03) 0 0; color: var(--text-secondary); font-size: 13px; }
+    /* ---- Tile (card) ---- */
+    .cds-tile { background: var(--layer-01); border: 1px solid var(--border-subtle); padding: var(--spacing-06); max-width: 24rem; }
+    .cds-tile h3 { margin: 0 0 var(--spacing-03); font-size: 16px; font-weight: 600; }
+    .cds-tile p { margin: 0 0 var(--spacing-05); color: var(--text-secondary); font-size: 14px; }
 
-    /* ---- Structured list ---- */
-    .cds-slist { width: 100%; border-collapse: collapse; background: var(--layer-01); }
-    .cds-slist th, .cds-slist td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); font-size: 14px; }
-    .cds-slist th { font-weight: 600; color: var(--text-secondary); font-size: 12px; }
+    /* ---- Empty state ---- */
+    .cds-empty { background: var(--layer-01); border: 1px solid var(--border-subtle); padding: var(--spacing-09) var(--spacing-06); text-align: center; max-width: 32rem; }
+    .cds-empty .glyph { width: 48px; height: 48px; border-radius: 50%; background: var(--layer-02); color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: var(--spacing-05); }
+    .cds-empty h3 { margin: 0 0 var(--spacing-03); font-size: 16px; font-weight: 600; }
+    .cds-empty p { margin: 0 0 var(--spacing-05); color: var(--text-secondary); }
+    .cds-empty .cds-btn { padding-right: 16px; }
 
     /* ---- Data table ---- */
-    .cds-table-toolbar { display: flex; align-items: center; justify-content: space-between; background: var(--layer-01); padding: var(--spacing-03) var(--spacing-05); border-bottom: 1px solid var(--border-subtle); }
-    .cds-table-toolbar .cds-input { max-width: 16rem; min-height: 40px; }
     .cds-table { width: 100%; border-collapse: collapse; background: var(--layer-01); font-size: 14px; }
+    .cds-table caption { text-align: left; padding: var(--spacing-05); font-size: 16px; font-weight: 600; caption-side: top; background: var(--layer-01); }
     .cds-table th, .cds-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); }
     .cds-table thead th { background: var(--layer-02); font-weight: 600; font-size: 12px; color: var(--text-primary); white-space: nowrap; }
-    .cds-table th.sortable button { border: 0; background: transparent; font: inherit; font-weight: 600; font-size: 12px; color: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
-    .cds-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .cds-table td.num, .cds-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
     .cds-table tbody tr:hover { background: rgba(141,141,141,.10); }
-    .cds-table input[type="checkbox"] { accent-color: var(--interactive); }
     .table-scroll { overflow-x: auto; }
 
     /* ---- Tabs ---- */
@@ -217,29 +215,25 @@
     .cds-tab { border: 0; background: transparent; font: inherit; font-size: 14px; color: var(--text-secondary); padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; }
     .cds-tab[aria-selected="true"] { color: var(--text-primary); border-bottom-color: var(--interactive); font-weight: 600; }
     .cds-tab:hover { color: var(--text-primary); }
-    .cds-tabpanel { padding: var(--spacing-06) 0; }
+    .cds-tabpanel { padding: var(--spacing-06) 0; color: var(--text-secondary); }
+    .cds-tabpanel[hidden] { display: none; }
 
     /* ---- Modal (rendered as a static example, not an overlay) ---- */
     .cds-modal { max-width: 32rem; background: var(--layer-01); border: 1px solid var(--border-subtle); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
     .cds-modal__head { display: flex; align-items: flex-start; justify-content: space-between; padding: var(--spacing-05) var(--spacing-05) 0; }
     .cds-modal__head h3 { margin: 0; font-size: 20px; font-weight: 400; }
-    .cds-modal__head small { display: block; color: var(--text-secondary); font-size: 12px; margin-bottom: var(--spacing-03); }
     .cds-modal__body { padding: var(--spacing-05); color: var(--text-secondary); }
     .cds-modal__foot { display: flex; }
     .cds-modal__foot .cds-btn { flex: 1; }
 
-    .swatches { display: flex; flex-wrap: wrap; gap: var(--spacing-05); }
-    .swatch { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-secondary); }
-    .swatch .chip { width: 88px; height: 48px; border: 1px solid var(--border-subtle); }
     code { font-family: var(--font-mono); font-size: 13px; background: var(--layer-02); padding: 1px 4px; }
-
     footer.page-foot { border-top: 1px solid var(--border-subtle); margin-top: var(--spacing-09); padding: var(--spacing-06) var(--spacing-05); color: var(--text-secondary); font-size: 12px; text-align: center; }
   </style>
 </head>
 <body>
-  <!-- UI Shell header -->
+  <!-- 1. Page header / UI Shell -->
   <header class="cds-header">
-    <span class="cds-header__name">Carbon <span>Preview</span></span>
+    <span class="cds-header__name">Northwind <span>Preview</span></span>
     <nav class="cds-header__nav" aria-label="Product">
       <a href="#" aria-current="page">Dashboard</a>
       <a href="#components">Components</a>
@@ -259,160 +253,92 @@
   </header>
 
   <main class="page">
-    <h1>IBM Carbon kitchen sink</h1>
-    <p class="lead">A self-contained, static preview of core IBM Carbon Design System components rendered with the g10 (light) and g100 (dark) theme tokens. Use the sun icon in the header to switch themes. This is a visual reference, not the production build — real apps consume <code>@carbon/react</code> or <code>@carbon/web-components</code>.</p>
+    <h1>Component preview</h1>
+    <p class="lead">A self-contained, static rendering of the shared preview comparison spec using core IBM
+      Carbon Design System components with the g10 (light) and g100 (dark) theme tokens. Same screen and
+      sample data as the other Albitor design-system previews. Use the sun icon in the header to switch
+      themes. Real apps consume <code>@carbon/react</code> or <code>@carbon/web-components</code>.</p>
 
+    <!-- 2. Buttons -->
     <section id="components">
       <h2>Buttons</h2>
       <div class="row">
-        <button type="button" class="cds-btn cds-btn--primary">Primary
+        <button type="button" class="cds-btn cds-btn--primary">Save changes
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
-        <button type="button" class="cds-btn cds-btn--secondary">Secondary</button>
-        <button type="button" class="cds-btn cds-btn--tertiary">Tertiary</button>
-        <button type="button" class="cds-btn cds-btn--ghost">Ghost</button>
-        <button type="button" class="cds-btn cds-btn--danger">Delete</button>
-        <button type="button" class="cds-btn cds-btn--icon" aria-label="Add item">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><line x1="10" y1="4" x2="10" y2="16" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="1.5"/></svg>
-        </button>
+        <button type="button" class="cds-btn cds-btn--secondary">Cancel</button>
+        <button type="button" class="cds-btn cds-btn--danger">Delete account</button>
+        <button type="button" class="cds-btn cds-btn--primary" disabled>Submitting…</button>
       </div>
     </section>
 
+    <!-- 3. Form fields -->
     <section>
-      <h2>Form inputs</h2>
+      <h2>Form fields</h2>
       <div class="row">
         <form class="stack" style="flex:1 1 320px;">
           <div class="cds-form-item">
             <label class="cds-label" for="f-name">Full name</label>
             <input class="cds-input" id="f-name" type="text" autocomplete="name" placeholder="Ada Lovelace">
-            <div class="cds-helper">As it appears on official documents.</div>
           </div>
           <div class="cds-form-item">
-            <label class="cds-label" for="f-email">Work email (invalid example)</label>
+            <label class="cds-label" for="f-email">Email address</label>
             <input class="cds-input cds-input--invalid" id="f-email" type="email" value="ada@" aria-invalid="true" aria-describedby="f-email-err">
-            <div class="cds-invalid-text" id="f-email-err">Enter a valid email address, e.g. name@example.com</div>
+            <div class="cds-invalid-text" id="f-email-err">Enter a valid email address, for example name@example.com</div>
           </div>
           <div class="cds-form-item">
-            <label class="cds-label" for="f-pass">Password</label>
-            <div class="cds-password-wrap">
-              <input class="cds-input" id="f-pass" type="password" value="hunter2000" autocomplete="current-password">
-              <button type="button" class="cds-password-toggle" aria-label="Show password" data-pass-toggle>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.2" stroke="currentColor" stroke-width="1.5"/></svg>
-              </button>
-            </div>
-          </div>
-        </form>
-        <form class="stack" style="flex:1 1 320px;">
-          <div class="cds-form-item">
-            <label class="cds-label" for="f-role">Role</label>
+            <label class="cds-label" for="f-country">Country</label>
             <div class="cds-select-wrap">
-              <select class="cds-select" id="f-role">
-                <option>Administrator</option>
-                <option>Editor</option>
-                <option>Viewer</option>
+              <select class="cds-select" id="f-country">
+                <option selected>United Kingdom</option>
+                <option>France</option>
+                <option>Germany</option>
               </select>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5"/></svg>
             </div>
           </div>
-          <div class="cds-form-item">
-            <label class="cds-label" for="f-notes">Notes</label>
-            <textarea class="cds-textarea" id="f-notes" placeholder="Optional context…"></textarea>
-          </div>
-          <fieldset class="cds-form-item" style="border:0;padding:0;margin:0;">
-            <legend class="cds-label">Permissions</legend>
-            <label class="cds-choice"><input type="checkbox" checked> Read</label>
-            <label class="cds-choice"><input type="checkbox"> Write</label>
-            <label class="cds-choice"><input type="checkbox"> Delete</label>
+        </form>
+        <form class="stack" style="flex:1 1 320px;">
+          <fieldset class="cds-fieldset">
+            <legend>Notifications</legend>
+            <label class="cds-choice"><input type="checkbox" checked> Email</label>
+            <label class="cds-choice"><input type="checkbox"> SMS</label>
+            <label class="cds-choice"><input type="checkbox"> Push</label>
           </fieldset>
-          <fieldset class="cds-form-item" style="border:0;padding:0;margin:0;">
-            <legend class="cds-label">Environment</legend>
-            <label class="cds-choice"><input type="radio" name="env" checked> Production</label>
-            <label class="cds-choice"><input type="radio" name="env"> Staging</label>
+          <fieldset class="cds-fieldset">
+            <legend>Plan</legend>
+            <label class="cds-choice"><input type="radio" name="plan"> Free</label>
+            <label class="cds-choice"><input type="radio" name="plan" checked> Pro</label>
+            <label class="cds-choice"><input type="radio" name="plan"> Enterprise</label>
           </fieldset>
-          <div class="cds-form-item">
-            <span class="cds-label" id="toggle-label">Email notifications</span>
-            <label class="cds-toggle">
-              <input type="checkbox" checked aria-labelledby="toggle-label">
-              <span class="cds-toggle__track"></span>
-              <span>On</span>
-            </label>
-          </div>
         </form>
       </div>
     </section>
 
-    <section>
-      <h2>Notifications</h2>
-      <div class="cds-notification cds-notification--info"><span class="dot dot--info" aria-hidden="true"></span><div><strong>Informational</strong><p>A new export format is available.</p></div></div>
-      <div class="cds-notification cds-notification--success"><span class="dot dot--success" aria-hidden="true"></span><div><strong>Success</strong><p>Your changes were saved.</p></div></div>
-      <div class="cds-notification cds-notification--warning"><span class="dot dot--warning" aria-hidden="true"></span><div><strong>Warning</strong><p>Your session expires in 5 minutes.</p></div></div>
-      <div class="cds-notification cds-notification--error"><span class="dot dot--error" aria-hidden="true"></span><div><strong>Error</strong><p>Two records failed to import.</p></div></div>
-    </section>
-
-    <section>
-      <h2>Tags</h2>
-      <div>
-        <span class="cds-tag cds-tag--blue">Active</span>
-        <span class="cds-tag cds-tag--green">Passed</span>
-        <span class="cds-tag cds-tag--red">Failed</span>
-        <span class="cds-tag cds-tag--gray">Draft</span>
-      </div>
-    </section>
-
-    <section>
-      <h2>Tiles</h2>
-      <div class="cds-tiles">
-        <div class="cds-tile"><h3>Total users</h3><div class="metric">12,480</div><p>+4.2% this week</p></div>
-        <div class="cds-tile"><h3>Active sessions</h3><div class="metric">318</div><p>Live now</p></div>
-        <div class="cds-tile"><h3>Error rate</h3><div class="metric">0.4%</div><p>Within threshold</p></div>
-        <div class="cds-tile"><h3>Uptime</h3><div class="metric">99.98%</div><p>Last 30 days</p></div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Structured list</h2>
-      <table class="cds-slist">
-        <thead><tr><th scope="col">Setting</th><th scope="col">Value</th><th scope="col">Scope</th></tr></thead>
-        <tbody>
-          <tr><td>Data retention</td><td>90 days</td><td>Organisation</td></tr>
-          <tr><td>Region</td><td>eu-west-2</td><td>Workspace</td></tr>
-          <tr><td>Encryption</td><td>AES-256 at rest</td><td>Organisation</td></tr>
-        </tbody>
-      </table>
-    </section>
-
+    <!-- 4. Data table -->
     <section id="data">
       <h2>Data table</h2>
-      <div class="cds-table-toolbar">
-        <label class="cds-label" style="margin:0;">
-          <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Search table</span>
-        </label>
-        <input class="cds-input" type="search" aria-label="Search table" placeholder="Search">
-        <button type="button" class="cds-btn cds-btn--primary" style="padding:11px 16px;min-height:40px;">Add record</button>
-      </div>
       <div class="table-scroll">
         <table class="cds-table">
+          <caption>Recent orders</caption>
           <thead>
             <tr>
-              <th scope="col"><input type="checkbox" aria-label="Select all rows"></th>
-              <th scope="col" class="sortable"><button type="button">Name
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M4 6l3-3 3 3M4 8l3 3 3-3" stroke="currentColor" stroke-width="1.2"/></svg>
-              </button></th>
+              <th scope="col">Order</th>
+              <th scope="col">Customer</th>
               <th scope="col">Status</th>
-              <th scope="col">Owner</th>
-              <th scope="col" class="num">Records</th>
+              <th scope="col" class="num">Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td><input type="checkbox" aria-label="Select Orders pipeline"></td><td>Orders pipeline</td><td><span class="cds-tag cds-tag--green">Healthy</span></td><td>a.turing</td><td class="num">1,204</td></tr>
-            <tr><td><input type="checkbox" aria-label="Select Billing sync"></td><td>Billing sync</td><td><span class="cds-tag cds-tag--red">Failing</span></td><td>g.hopper</td><td class="num">98</td></tr>
-            <tr><td><input type="checkbox" aria-label="Select Audit log"></td><td>Audit log</td><td><span class="cds-tag cds-tag--blue">Running</span></td><td>k.johnson</td><td class="num">54,900</td></tr>
-            <tr><td><input type="checkbox" aria-label="Select Nightly report"></td><td>Nightly report</td><td><span class="cds-tag cds-tag--gray">Paused</span></td><td>a.lovelace</td><td class="num">0</td></tr>
+            <tr><td>ORD-1001</td><td>Northwind Ltd</td><td><span class="cds-tag cds-tag--green">Paid</span></td><td class="num">£1,240.00</td></tr>
+            <tr><td>ORD-1002</td><td>Acme Co</td><td><span class="cds-tag cds-tag--gray">Pending</span></td><td class="num">£530.50</td></tr>
+            <tr><td>ORD-1003</td><td>Globex</td><td><span class="cds-tag cds-tag--red">Overdue</span></td><td class="num">£98.00</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
+    <!-- 5. Tabs -->
     <section>
       <h2>Tabs</h2>
       <div class="cds-tabs" role="tablist" aria-label="Record view">
@@ -421,39 +347,71 @@
         <button class="cds-tab" role="tab" id="tab-3" aria-selected="false" aria-controls="panel-3" tabindex="-1">Settings</button>
       </div>
       <div class="cds-tabpanel" role="tabpanel" id="panel-1" aria-labelledby="tab-1">
-        <p style="margin:0;color:var(--text-secondary);">Overview content. Tabs switch between equivalent sections; only the selected panel is shown.</p>
+        <p style="margin:0">Overview content. Tabs switch between equivalent views of the same screen.</p>
+      </div>
+      <div class="cds-tabpanel" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+        <p style="margin:0">Activity content.</p>
+      </div>
+      <div class="cds-tabpanel" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+        <p style="margin:0">Settings content.</p>
       </div>
     </section>
 
+    <!-- 6. Tile (card) -->
+    <section>
+      <h2>Tile</h2>
+      <div class="cds-tile">
+        <h3>Project Atlas</h3>
+        <p>A short supporting description that sits inside the card content region.</p>
+        <button type="button" class="cds-btn cds-btn--ghost">View details</button>
+      </div>
+    </section>
+
+    <!-- 7. Modal (static example) -->
     <section>
       <h2>Modal (static example)</h2>
       <div class="cds-modal" role="dialog" aria-labelledby="m-title" aria-describedby="m-body">
         <div class="cds-modal__head">
-          <div>
-            <small>Billing sync</small>
-            <h3 id="m-title">Delete this data source?</h3>
-          </div>
+          <h3 id="m-title">Delete account?</h3>
           <button type="button" class="cds-btn cds-btn--icon" aria-label="Close">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="1.5"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="1.5"/></svg>
           </button>
         </div>
-        <div class="cds-modal__body" id="m-body">Deleting removes the data source and its 98 records. This cannot be undone.</div>
+        <div class="cds-modal__body" id="m-body">This permanently removes your account and all associated data. This action cannot be undone.</div>
         <div class="cds-modal__foot">
           <button type="button" class="cds-btn cds-btn--secondary" style="justify-content:flex-start;">Cancel</button>
-          <button type="button" class="cds-btn cds-btn--danger" style="justify-content:flex-start;">Delete</button>
+          <button type="button" class="cds-btn cds-btn--danger" style="justify-content:flex-start;">Delete account</button>
         </div>
       </div>
     </section>
 
+    <!-- 8. Notifications -->
     <section>
-      <h2>Theme tokens</h2>
-      <div class="swatches">
-        <div class="swatch"><span class="chip" style="background:var(--interactive)"></span>interactive</div>
-        <div class="swatch"><span class="chip" style="background:var(--support-error)"></span>support-error</div>
-        <div class="swatch"><span class="chip" style="background:var(--support-success)"></span>support-success</div>
-        <div class="swatch"><span class="chip" style="background:var(--support-warning)"></span>support-warning</div>
-        <div class="swatch"><span class="chip" style="background:var(--layer-01)"></span>layer-01</div>
-        <div class="swatch"><span class="chip" style="background:var(--background)"></span>background</div>
+      <h2>Notifications</h2>
+      <div class="cds-notification cds-notification--info"><span class="dot dot--info" aria-hidden="true"></span><div><strong>Information</strong><p>A new version is available.</p></div></div>
+      <div class="cds-notification cds-notification--success"><span class="dot dot--success" aria-hidden="true"></span><div><strong>Success</strong><p>Your changes have been saved.</p></div></div>
+      <div class="cds-notification cds-notification--error"><span class="dot dot--error" aria-hidden="true"></span><div><strong>Error</strong><p>Could not connect to the server.</p></div></div>
+    </section>
+
+    <!-- 9. Empty state -->
+    <section>
+      <h2>Empty state</h2>
+      <div class="cds-empty">
+        <span class="glyph" aria-hidden="true">&#128230;</span>
+        <h3>No orders yet</h3>
+        <p>When you create your first order, it will appear here.</p>
+        <button type="button" class="cds-btn cds-btn--primary">Create order</button>
+      </div>
+    </section>
+
+    <!-- 10. Tags -->
+    <section>
+      <h2>Tags</h2>
+      <div>
+        <span class="cds-tag cds-tag--blue">Active</span>
+        <span class="cds-tag cds-tag--green">Complete</span>
+        <span class="cds-tag cds-tag--gray">Pending</span>
+        <span class="cds-tag cds-tag--red">Failed</span>
       </div>
     </section>
   </main>
@@ -463,7 +421,8 @@
   </footer>
 
   <script>
-    // Theme toggle (light g10 <-> dark g100). Inline, no network — file:// safe.
+    // Theme toggle (light g10 <-> dark g100) and tab switching.
+    // Inline, no network — file:// safe.
     (function () {
       var root = document.documentElement;
       var btn = document.getElementById('theme-toggle');
@@ -472,13 +431,16 @@
           root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
         });
       }
-      // Password show/hide toggle.
-      document.querySelectorAll('[data-pass-toggle]').forEach(function (t) {
-        t.addEventListener('click', function () {
-          var input = t.parentNode.querySelector('input');
-          var showing = input.type === 'text';
-          input.type = showing ? 'password' : 'text';
-          t.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      // Tabs
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.cds-tab[role="tab"]'));
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) {
+            var selected = t === tab;
+            t.setAttribute('aria-selected', String(selected));
+            t.tabIndex = selected ? 0 : -1;
+            document.getElementById(t.getAttribute('aria-controls')).hidden = !selected;
+          });
         });
       });
     })();
