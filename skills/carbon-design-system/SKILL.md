@@ -1,6 +1,8 @@
 ---
 name: carbon-design-system
 description: Use when building, reviewing, or discussing an enterprise, data-heavy or B2B frontend — any React/Web Component/HTML UI that should follow the IBM Carbon Design System. Covers the Carbon component library (data tables, forms, UI Shell, notifications, tiles), dashboard and form patterns, the IBM Design Language styles (2x Grid, IBM Plex type, theme tokens, spacing scale, motion), and how to consume Carbon (@carbon/react, @carbon/web-components, @carbon/styles) with correct theming and token discipline.
+metadata:
+  capability: design-system
 ---
 
 # IBM Carbon Design System
