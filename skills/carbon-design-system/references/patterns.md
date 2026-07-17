@@ -22,6 +22,8 @@ A dashboard is a scannable overview built on the **2x Grid** from tiles, data ta
 
 ### Page header and app frame
 Every screen sits inside the UI Shell: a `Header` (product name, primary nav, global actions) and optionally a collapsible `SideNav`. Keep the frame consistent across the product (3.2.3 Consistent Navigation). Put a page title (`Heading`) and any page-level actions/breadcrumb at the top of the content area.
+- **Human labels over raw IDs:** in the `Breadcrumb`, `DataTable` cells, page `Heading`, and detail panels show friendly, human-readable names ("Speaker 1", not `spk_0`); keep the raw identifier for the route param or API call, never as the visible label.
+- **Keep the document title in sync:** update `document.title` on client-side navigation so the browser tab and history reflect the current page or record, not the initial product title.
 
 ### Two-panel / master-detail
 List or table on the left/top, detail on the right/bottom (or in a side panel/modal). Selecting a row updates the detail. Preserve the user's place in the list when they return from detail.
@@ -70,6 +72,7 @@ Reserve error styling for genuine errors; don't over-notify or users tune it out
 - **Skeleton states** (Carbon skeleton components) for initial page/table loads — show layout while data arrives.
 - `InlineLoading` for in-context operations (saving a row) with an accessible active→success/error announcement.
 - `Loading` overlay for blocking waits; `ProgressBar` for known-duration operations (uploads, imports).
+- **Async status without a manual refresh:** when a row or resource has an async processing state ("processing" → "completed"), reflect the outcome on its own — poll or refetch (or subscribe over WebSocket/SSE) so the `DataTable`, tile, or detail updates in place, without the user leaving and returning or reloading. Move the row's status `Tag`/`InlineLoading` to its final state and announce it (`ToastNotification` / live region, 4.1.3).
 
 ### Dialogs and confirmation
 Use `Modal`/`ComposedModal` for a focused task or a confirmation. Destructive actions use a `danger` modal that names the consequence and the object ("Delete 4 users?"). Keep focus trapped while open and return it on close. Don't use a modal for long forms or non-urgent info.
