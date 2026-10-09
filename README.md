@@ -35,6 +35,17 @@ It is one of the design-system plugins Albitor makes available to its users — 
 
 - `preview/index.html` — a **self-contained** static kitchen-sink (no build step, no network) that renders Carbon-styled core components (buttons, inputs, dropdown, data table, tabs, tiles, structured list, notifications, tags, modal, and more). It opens standalone from `file://` and is used by the create/describe-and-build flow, as a review baseline, and in the handover pack.
 
+### Preview tokens
+
+`preview-tokens.json` is the small, generic token set Albitor's look preview paints this house style
+from (albitor-ltd/albitor#3070): fonts, a four-step type scale, radius, density, elevation, and the
+text, border, surface, background and accent colours. Albitor validates it against an allow-list at
+ingest (hex colours, px/rem lengths, plain font-family names, fixed enums) and ignores a file that
+fails. The values are the Carbon v11 White theme: IBM Plex Sans,
+`label-01`/`body-01`/`heading-03`/`heading-04` (12/14/20/28px), `text-primary` #161616,
+`text-secondary` #525252, `border-subtle-00` #e0e0e0, `layer-01` #f4f4f4, `interactive` #0f62fe,
+square corners and no elevation.
+
 ## Installing
 
 Add the marketplace that lists this plugin, then install:

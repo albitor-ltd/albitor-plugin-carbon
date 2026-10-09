@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "font_family": "\"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif",
+  "heading_weight": 400,
+  "type_scale": {
+    "small": "12px",
+    "body": "14px",
+    "heading": "20px",
+    "title": "28px"
+  },
+  "radius": "0",
+  "density": "compact",
+  "elevation": "none",
+  "colours": {
+    "text": "#161616",
+    "text_secondary": "#525252",
+    "border": "#e0e0e0",
+    "surface": "#f4f4f4",
+    "background": "#ffffff",
+    "accent": "#0f62fe",
+    "on_accent": "#ffffff"
+  }
+}
