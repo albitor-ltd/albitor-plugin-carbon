@@ -1,3 +1,5 @@
+> **Archived 2026-10-26.** Superseded by [albitor-ltd/albitor-plugins](https://github.com/albitor-ltd/albitor-plugins) (`plugins/carbon`, tag `carbon/v0.1.5`). Read-only.
+
 # IBM Carbon standards plugin (`carbon`)
 
 A [Claude Code plugin](https://code.claude.com/docs/en/plugins) that helps you build and audit **enterprise, data-heavy, B2B** interfaces with the **IBM Carbon Design System**. It packages Carbon's components (React and Web Components), patterns, IBM Design Language styles/tokens, and **WCAG 2.2 AA accessibility** into skills, commands, an audit agent, an advisory hook, and a self-contained preview page.
